@@ -24,7 +24,13 @@ public class RoamState : BaseState
     {
         if (_personnage._navMeshAgent != null)
         {
-            if (!_personnage._navMeshAgent.pathPending && _personnage._navMeshAgent.remainingDistance <= 0.2f)
+            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 5)
+            {
+                Debug.Log("NPC is too close from player. Fleeing");
+                _stateMachine.ChangeState(new FleeState(_stateMachine, _personnage));
+                return;
+            }
+            if (!_personnage._navMeshAgent.pathPending && _personnage._navMeshAgent.remainingDistance <= 1)
             {
                 if (Random.Range(0,3) == 0) { _stateMachine.ChangeState(new IdleState(_stateMachine, _personnage)); return; } //Une chance sur 3 qu'il idle rendu a un point.
                 _personnage._navMeshAgent.SetDestination(GetRandomPoint().transform.position);

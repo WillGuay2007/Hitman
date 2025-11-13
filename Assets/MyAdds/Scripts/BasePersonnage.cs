@@ -12,15 +12,17 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public StateMachine _stateMachine;
     public NavMeshAgent _navMeshAgent;
     public Animator _animator;
+    public GameObject _player;
     [SerializeField] private RoamingPointsCointainer _roamingPointsContainer;
 
     public virtual void Start()
     {
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+        _player = GameObject.FindGameObjectWithTag("Player");
 
         _stateMachine = new StateMachine();
-        _stateMachine.ChangeState(new RoamState(_stateMachine, this));
+        _stateMachine.ChangeState(new IdleState(_stateMachine, this));
     }
 
     public List<Transform> GetRoamingPoints()
@@ -51,7 +53,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         }
         if (_health <= 30)
         {
-            _stateMachine.ChangeState(new FleeState(_stateMachine, this));
+            _stateMachine.ChangeState(new IdleState(_stateMachine, this));
             return;
         }
         //Sinon il continue de faire ce qu'il faisait
