@@ -1,5 +1,8 @@
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
+
 
 //Cette classe abstraite gère les citizens et les guards.
 
@@ -9,14 +12,22 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public StateMachine _stateMachine;
     public NavMeshAgent _navMeshAgent;
     public Animator _animator;
+    [SerializeField] private RoamingPointsCointainer _roamingPointsContainer;
 
     public virtual void Start()
     {
-        _stateMachine = new StateMachine();
-        _stateMachine.ChangeState(new IdleState(_stateMachine, this));
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
+
+        _stateMachine = new StateMachine();
+        _stateMachine.ChangeState(new RoamState(_stateMachine, this));
     }
+
+    public List<Transform> GetRoamingPoints()
+    {
+        return _roamingPointsContainer.RoamingPoints;
+    }
+
 
     public virtual void Update()
     {
@@ -28,7 +39,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     }
     public virtual void RoamAround()
     {
-
+        _stateMachine.ChangeState(new RoamState(_stateMachine, this));
     }
     public virtual void TakeDamage(int damageAmount)
     {

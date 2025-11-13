@@ -6,7 +6,6 @@ using UnityEngine;
 
 public interface IPersonnage
 {
-    public void RoamAround();
     public void Die();
     public void Idle();
     public void TakeDamage(int damageAmount);
