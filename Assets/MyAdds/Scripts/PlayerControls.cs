@@ -5,20 +5,27 @@ using UnityEngine.InputSystem;
 public class PlayerControls : MonoBehaviour
 {
     [SerializeField] private InputActionAsset m_InputActionAsset;
-    private InputAction m_Shoot;
     [SerializeField] private Transform Gun;
+    [SerializeField] private Transform PlayerCamera;
+    private CameraShaker Shaker;
+    private InputAction ShootAction;
     private Animator GunAnimator;
+
+
     void Start()
     {
         GunAnimator = Gun.GetComponent<Animator>();
-        m_Shoot = m_InputActionAsset.FindAction("Shoot");
+        ShootAction = m_InputActionAsset.FindAction("Shoot");
+        Shaker = gameObject.AddComponent<CameraShaker>();
+        Shaker.Camera = PlayerCamera;
     }
 
     void Update()
     {
-        if (m_Shoot.WasPressedThisFrame())
+        if (ShootAction.WasPressedThisFrame())
         {
             GunAnimator.SetTrigger("Fire");
+            Shaker.Shake(1);
         }
     }
 
@@ -26,7 +33,7 @@ public class PlayerControls : MonoBehaviour
 
     public void Shoot()
     {
-        
+
     }
 
     public void CasingRelease()

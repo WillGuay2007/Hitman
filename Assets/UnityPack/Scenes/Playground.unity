@@ -2898,6 +2898,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_InputActionAsset: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   Gun: {fileID: 470656681}
+  PlayerCamera: {fileID: 8338988565591873055}
 --- !u!1001 &1505064179029002418
 PrefabInstance:
   m_ObjectHideFlags: 0
