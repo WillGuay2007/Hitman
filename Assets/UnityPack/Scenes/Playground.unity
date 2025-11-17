@@ -2896,6 +2896,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e0b03e24298ea44fb8e05b197aae20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_InputActionAsset: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   Gun: {fileID: 470656681}
 --- !u!1001 &1505064179029002418
 PrefabInstance:
