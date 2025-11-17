@@ -12,14 +12,13 @@ public class FleeState : BaseState
     {
         _personnage._animator.SetBool("Flee", true);
         _personnage._navMeshAgent.speed += 5;
-        _personnage._navMeshAgent.isStopped = false;
+        _personnage._navMeshAgent.SetDestination(GetFurthestPointFromPlayer().position);
     }
 
     public override void Exit()
     {
         _personnage._animator.SetBool("Flee", false);
         _personnage._navMeshAgent.speed -= 5;
-        _personnage._navMeshAgent.isStopped = true;
     }
 
     public override void Update()
@@ -29,7 +28,7 @@ public class FleeState : BaseState
             if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) >= 10)
             {
                 Debug.Log("NPC is far enough to stop fleeing");
-                _stateMachine.ChangeState(new IdleState(_stateMachine, _personnage));
+                _stateMachine.ChangeState(_personnage._idleState);
             }
             _personnage._navMeshAgent.SetDestination(GetFurthestPointFromPlayer().position);
         }

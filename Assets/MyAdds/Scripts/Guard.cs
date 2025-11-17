@@ -24,6 +24,11 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
 
     public override void onIdleExit()
     {
-        _navMeshAgent.isStopped = true;
+        _navMeshAgent.isStopped = false;
+    }
+
+    public override void onCriticalHealth()
+    {
+        _stateMachine.ChangeState(_fleeState);
     }
 }

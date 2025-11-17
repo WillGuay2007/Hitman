@@ -54,6 +54,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public virtual void onDiedEnter() { }
     public virtual void onDiedExit() { }
     public virtual void onDiedUpdate() { }
+    public virtual bool onRoamUpdate() { return true; }
+
 
     public virtual void onCriticalHealth() { }
 

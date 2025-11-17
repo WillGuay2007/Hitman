@@ -10,29 +10,22 @@ public class RoamState : BaseState
     public override void Enter()
     {
         _personnage._animator.SetBool("Roam", true);
-        _personnage._navMeshAgent.isStopped = false;
         _personnage._navMeshAgent.SetDestination(GetRandomPoint().transform.position);
     }
 
     public override void Exit()
     {
         _personnage._animator.SetBool("Roam", false);
-        _personnage._navMeshAgent.isStopped = true;
     }
 
     public override void Update()
     {
         if (_personnage._navMeshAgent != null)
         {
-            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 5)
-            {
-                Debug.Log("NPC is too close from player. Fleeing");
-                _stateMachine.ChangeState(new FleeState(_stateMachine, _personnage));
-                return;
-            }
+            if (!_personnage.onRoamUpdate()) return; //Cette fonction va return false si elle change de state. comme ca le reste du code de roam se fait pas executer alors qu'on est dans l'autre state.
             if (!_personnage._navMeshAgent.pathPending && _personnage._navMeshAgent.remainingDistance <= 1)
             {
-                if (Random.Range(0,3) == 0) { _stateMachine.ChangeState(new IdleState(_stateMachine, _personnage)); return; } //Une chance sur 3 qu'il idle rendu a un point.
+                if (Random.Range(0,3) == 0) { _stateMachine.ChangeState(_personnage._idleState); return;} //Une chance sur 3 qu'il idle rendu a un point.
                 _personnage._navMeshAgent.SetDestination(GetRandomPoint().transform.position);
             }
         }

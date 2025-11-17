@@ -10,6 +10,7 @@ public class StateMachine
 
     public void ChangeState(BaseState newState)
     {
+        if (newState == _currentState) return;
         if (_currentState != null)
         {
             _currentState.Exit();

@@ -22,6 +22,17 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
     public override void onIdleExit()
     {
-        _navMeshAgent.isStopped = true;
+        _navMeshAgent.isStopped = false;
+    }
+
+    public override bool onRoamUpdate()
+    {
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 5)
+        {
+            Debug.Log("NPC is too close from player. Fleeing");
+            _stateMachine.ChangeState(_fleeState);
+            return false;
+        }
+        return true;
     }
 }
