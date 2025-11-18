@@ -7,7 +7,7 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private InputActionAsset m_InputActionAsset;
     [SerializeField] private Transform Gun;
     [SerializeField] private Transform PlayerCamera;
-    private CameraShaker Shaker;
+    private Shake CameraShake;
     private InputAction ShootAction;
     private Animator GunAnimator;
 
@@ -16,16 +16,15 @@ public class PlayerControls : MonoBehaviour
     {
         GunAnimator = Gun.GetComponent<Animator>();
         ShootAction = m_InputActionAsset.FindAction("Shoot");
-        Shaker = gameObject.AddComponent<CameraShaker>();
-        Shaker.Camera = PlayerCamera;
+        CameraShake = PlayerCamera.GetComponent<Shake>();
     }
 
     void Update()
     {
         if (ShootAction.WasPressedThisFrame())
         {
+            CameraShake.start = true;
             GunAnimator.SetTrigger("Fire");
-            Shaker.Shake(1);
         }
     }
 
