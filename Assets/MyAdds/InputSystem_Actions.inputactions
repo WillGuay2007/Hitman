@@ -993,13 +993,22 @@
             ]
         },
         {
-            "name": "Shoot",
+            "name": "MyCustomActions",
             "id": "17e5f8c8-b0d3-4fec-9dc4-fb84cbdbaa9c",
             "actions": [
                 {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "db6f0500-a09a-4eb0-ae19-f665cc10e356",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleGunEquip",
+                    "type": "Button",
+                    "id": "7581fc70-ced2-4a47-bbf1-04de6912ba40",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -1015,6 +1024,17 @@
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4a22f574-686c-4532-a544-dd13d51e10e7",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleGunEquip",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

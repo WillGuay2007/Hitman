@@ -7,6 +7,12 @@ public class Shake : MonoBehaviour
     public AnimationCurve curve;
     public float Duration = 1.0f;
     public float Amplitude = 1.0f;
+    private Vector3 startPosition;
+
+    private void Start()
+    {
+        startPosition = transform.localPosition;
+    }
 
     void Update()
     {
@@ -19,7 +25,6 @@ public class Shake : MonoBehaviour
 
     IEnumerator Shaking()
     {
-        Vector3 startPosition = transform.localPosition;
         float elapsedTime = 0f;
 
         while (elapsedTime < Duration) { 

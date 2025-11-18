@@ -119,6 +119,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &44121000 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+  m_PrefabInstance: {fileID: 60889539378096550}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &44121005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 44121000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
 --- !u!1001 &130511191
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2214,6 +2263,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 3d87184bf4725b841b26693d2234fffd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300002, guid: 3d87184bf4725b841b26693d2234fffd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300004, guid: 3d87184bf4725b841b26693d2234fffd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -3180,7 +3241,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 44121005}
   m_SourcePrefab: {fileID: 100100000, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
 --- !u!114 &135756641613574975 stripped
 MonoBehaviour:
@@ -3208,6 +3272,8 @@ MonoBehaviour:
   m_InputActionAsset: {fileID: -944628639613478452, guid: 289c1b55c9541489481df5cc06664110, type: 3}
   Gun: {fileID: 470656681}
   PlayerCamera: {fileID: 8338988565591873055}
+  MyGunHandler: {fileID: 470656685}
+  HasGunEquipped: 1
 --- !u!1001 &1505064179029002418
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3263,10 +3329,6 @@ PrefabInstance:
     - target: {fileID: 6392459366119443295, guid: 4453275cb21c0db4b97a81382c029350, type: 3}
       propertyPath: m_Name
       value: Citizen
-      objectReference: {fileID: 0}
-    - target: {fileID: 8843071423314209074, guid: 4453275cb21c0db4b97a81382c029350, type: 3}
-      propertyPath: m_AngularSpeed
-      value: 240
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3577,30 +3639,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 1.2647767
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.15300138
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.041999597
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.9795233
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.20133097
-      objectReference: {fileID: 0}
-    - target: {fileID: 3466384305944754417, guid: a8a868149c1c96344806fa253a159489, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 23.23
-      objectReference: {fileID: 0}
     - target: {fileID: 3664352771940527518, guid: a8a868149c1c96344806fa253a159489, type: 3}
       propertyPath: _roamingPointsContainer
       value: 
