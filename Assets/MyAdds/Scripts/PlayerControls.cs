@@ -1,13 +1,17 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 //Script fait par moi
 public class PlayerControls : MonoBehaviour
 {
+    [SerializeField] private float m_ShootDelay = 1f;
     [SerializeField] private InputActionAsset m_InputActionAsset;
     [SerializeField] private Transform Gun;
     [SerializeField] private Transform PlayerCamera;
     [SerializeField] private GunHandler MyGunHandler;
+    [SerializeField] private int gunDamage = 25;
+    private bool canShoot = true;
     private Shake CameraShake;
     private InputAction ShootAction;
     private InputAction ToggleGunEquipAction;
@@ -27,31 +31,11 @@ public class PlayerControls : MonoBehaviour
     {
         if (ToggleGunEquipAction.WasPressedThisFrame())
         {
-            CameraShake.start = true;
-            MyGunHandler.ToggleGunEquip();
-            HasGunEquipped = MyGunHandler.HasGunEquipped();
+            ToggleGun();
         }
         if (ShootAction.WasPressedThisFrame())
         {
-
-            CameraShake.start = true;
-            GunAnimator.SetTrigger("Fire");
-
-            if (!MyGunHandler.HasGunEquipped()) return; //Pas faire la logique de tir si il est pas equipped.
-            Ray myRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            RaycastHit hit;
-
-            if (Physics.Raycast(myRay, out hit))
-            {
-                if (hit.collider != null)
-                {
-                    BasePersonnage NPC = hit.collider.gameObject.GetComponent<BasePersonnage>();
-                    if (NPC == null) return;
-
-                    NPC.TakeDamage(10);
-
-                }
-            }
+            Shoot();
         }
     }
 
@@ -59,11 +43,38 @@ public class PlayerControls : MonoBehaviour
 
     public void Shoot()
     {
+        if (!MyGunHandler.HasGunEquipped() || !canShoot) return; //Pas faire la logique de tir si il est pas equipped.
+        canShoot = false;
+        StartCoroutine(ShootDelayCoroutine());
+        CameraShake.start = true;
+        GunAnimator.SetTrigger("Fire");
 
+        Ray myRay = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        RaycastHit hit;
+
+        if (Physics.Raycast(myRay, out hit))
+        {
+            if (hit.collider != null)
+            {
+                BasePersonnage NPC = hit.collider.gameObject.GetComponent<BasePersonnage>();
+                if (NPC == null) return;
+
+                NPC.TakeDamage(gunDamage);
+
+            }
+        }
     }
 
-    public void CasingRelease()
+    public void ToggleGun()
     {
-        
+        CameraShake.start = true;
+        MyGunHandler.ToggleGunEquip();
+        HasGunEquipped = MyGunHandler.HasGunEquipped();
+    }
+
+    IEnumerator ShootDelayCoroutine()
+    {
+        yield return new WaitForSeconds(m_ShootDelay);
+        canShoot = true;
     }
 }

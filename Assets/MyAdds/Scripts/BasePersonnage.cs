@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
+using System.Collections;
 
 
 //Cette classe abstraite gère les citizens et les guards.
@@ -13,6 +14,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public NavMeshAgent _navMeshAgent;
     public Animator _animator;
     public GameObject _player;
+    public bool IsDead = false;
 
     //Mes states pour optimiser
     public IdleState _idleState;
@@ -24,9 +26,11 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     [SerializeField] private RoamingPointsCointainer _roamingPointsContainer;
     public bool CanRegognizePlayer = false;
 
+    public GameObject Mesh;
+    public Color MeshColor;
+
     public virtual void Start()
     {
-
         _maxHealth = _health;
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
@@ -40,6 +44,9 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         _roamState = new RoamState(_stateMachine, this);
         _fleeState = new FleeState(_stateMachine, this);
         _diedState = new DiedState(_stateMachine, this);
+
+        Mesh = transform.GetChild(0).gameObject;
+        MeshColor = Mesh.GetComponent<SkinnedMeshRenderer>().material.color;
 
         _stateMachine.ChangeState(_idleState);
     }
@@ -66,27 +73,28 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public virtual void onFleeUpdate() { }
     public virtual void onFleeEnter() { }
     public virtual void onCriticalHealth() { }
+    public virtual void onTakeDamage() { }
 
     public virtual void TakeDamage(int damageAmount)
     {
-
+        if (IsDead) return;
+        StartCoroutine(TakeDamageEffect());
+        onTakeDamage();
         _health -= damageAmount;
-        if (_health <= 0) Die();
+        if (_health <= 0) { IsDead = true; Die(); }
         else if (_health <= 30) onCriticalHealth();
-
-        GameObject Mesh = transform.GetChild(0).gameObject;
-        Color MeshColor = Mesh.GetComponent<SkinnedMeshRenderer>().material.color;
-        //Modifications sur la couleur ici.
-        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = MeshColor;
     }
     public virtual void Die()
     {
+        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = Color.gray;
+        MeshColor = Color.gray;
         _stateMachine.ChangeState(_diedState);
     }
 
-    public void DestroyNPC()
+    public void DestroyComponents()
     {
-        Destroy(gameObject);
+        Destroy(_navMeshAgent);
+        GetComponent<CapsuleCollider>().isTrigger = true; //Comme ca ils peuvent toujours savoir si ils ont vu un mort.
     }
 
     public virtual Transform GetRandomPoint()
@@ -124,6 +132,13 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
             }
         }
         return FurthestPoint;
+    }
+
+    IEnumerator TakeDamageEffect()
+    {
+        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = MeshColor;
     }
 
 }

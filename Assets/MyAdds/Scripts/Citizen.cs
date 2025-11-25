@@ -77,4 +77,15 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
             _navMeshAgent.SetDestination(GetFurthestPointFromPlayer().position);
         }
     }
+
+    public override void onCriticalHealth()
+    {
+        _stateMachine.ChangeState(_fleeState);
+    }
+
+    public override void onTakeDamage()
+    {
+        _stateMachine.ChangeState(_fleeState);
+    }
+
 }

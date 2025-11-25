@@ -13,9 +13,8 @@ public class GunHandler : MonoBehaviour
         GunShake.start = true;
         SoundPlayer.PlayShootSound();
         MuzzleFlash.Play();
-        playerControls.Shoot();
     }
-    public void CasingRelease() => playerControls.CasingRelease(); // au cas ou que je mette quelquechose dedan.
+    public void CasingRelease() {} // au cas ou que je mette quelquechose dedan.
 
     public void ToggleGunEquip()
     {

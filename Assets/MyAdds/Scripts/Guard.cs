@@ -77,4 +77,9 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
         }
     }
 
+    public override void onTakeDamage()
+    {
+        CanRegognizePlayer = true; //Si jamais il reconnaissait pas deja la menace.
+    }
+
 }
