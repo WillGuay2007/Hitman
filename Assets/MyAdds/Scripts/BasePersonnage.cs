@@ -22,6 +22,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public FleeState _fleeState;
     public DiedState _diedState;
 
+    public bool _canUpdate = true;
+
     public PlayerControls _playerControls;
     [SerializeField] private RoamingPointsCointainer _roamingPointsContainer;
     public bool CanRegognizePlayer = false;
@@ -32,6 +34,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public virtual void Start()
     {
         _maxHealth = _health;
+        _canUpdate = true;
 
         _navMeshAgent = GetComponent<NavMeshAgent>();
         _animator = GetComponent<Animator>();
@@ -59,6 +62,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
 
     public virtual void Update()
     {
+        if (!_canUpdate) return;
+
         _stateMachine.Update();
     }
 
