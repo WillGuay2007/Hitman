@@ -8,8 +8,8 @@ using System.Collections;
 
 public abstract class BasePersonnage : MonoBehaviour, IPersonnage
 {
-    protected int _health = 100;
-    protected float _maxHealth;
+    public float _health = 100;
+    public float _maxHealth;
     public StateMachine _stateMachine;
     public NavMeshAgent _navMeshAgent;
     public Animator _animator;
@@ -21,12 +21,24 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public RoamState _roamState;
     public FleeState _fleeState;
     public DiedState _diedState;
+    public AlertState _alertState;
+    public AttackState _attackState;
+    public EatFruitState _eatFruitState;
+
+    [SerializeField] private string _currentStateName; //Puisque tu demandais d'afficher la current state dans l'inspecteur.
+
+    public AudioPlayer _audioPlayer;
 
     public bool _canUpdate = true;
 
     public PlayerControls _playerControls;
     [SerializeField] private RoamingPointsCointainer _roamingPointsContainer;
     public bool CanRegognizePlayer = false;
+
+    [SerializeField] private Transform _fruitsContainer;
+    public List<Transform> _fruits;
+
+
 
     public GameObject Mesh;
     public Color MeshColor;
@@ -40,13 +52,25 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         _animator = GetComponent<Animator>();
         _player = GameObject.FindGameObjectWithTag("Player");
 
+        _fruits = new List<Transform>();
+
+        foreach (Transform fruit in _fruitsContainer)
+        {
+            _fruits.Add(fruit);
+        }
+
         _stateMachine = new StateMachine();
         _playerControls = _player.GetComponent<PlayerControls>();
+
+        _audioPlayer = FindAnyObjectByType<AudioPlayer>();
 
         _idleState = new IdleState(_stateMachine, this);
         _roamState = new RoamState(_stateMachine, this);
         _fleeState = new FleeState(_stateMachine, this);
         _diedState = new DiedState(_stateMachine, this);
+        _eatFruitState = new EatFruitState(_stateMachine, this);
+        _alertState = new AlertState(_stateMachine, this);
+        _attackState = new AttackState(_stateMachine, this);
 
         Mesh = transform.GetChild(0).gameObject;
         MeshColor = Mesh.GetComponent<SkinnedMeshRenderer>().material.color;
@@ -62,6 +86,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
 
     public virtual void Update()
     {
+        _currentStateName = _stateMachine._currentState.GetType().Name;
         if (!_canUpdate) return;
 
         _stateMachine.Update();
@@ -84,9 +109,9 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     {
         if (IsDead) return;
         StartCoroutine(TakeDamageEffect());
-        onTakeDamage();
         _health -= damageAmount;
-        if (_health <= 0) { IsDead = true; Die(); }
+        if (_health > 0) onTakeDamage();
+        if (_health <= 0) { IsDead = true; Die(); return; }
         else if (_health <= 30) onCriticalHealth();
     }
     public virtual void Die()
@@ -141,7 +166,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
 
     IEnumerator TakeDamageEffect()
     {
-        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = Color.red;
+        Mesh.GetComponent<SkinnedMeshRenderer>().material.color = Color.yellow;
         yield return new WaitForSeconds(0.2f);
         Mesh.GetComponent<SkinnedMeshRenderer>().material.color = MeshColor;
     }

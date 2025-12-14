@@ -19,6 +19,12 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
 
         transform.Rotate(0, 20f * Time.deltaTime, 0);
 
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
+        {
+            _stateMachine.ChangeState(_alertState);
+            return;
+        }
+
         if (_timeIdled > _idleTimer) _stateMachine.ChangeState(_roamState);
     }
 
@@ -41,8 +47,10 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
     public override void onRoamUpdate()
     {
 
-        if (_health <= 30 && Vector3.Distance(transform.position, _player.transform.position) <= 7) {
-            _stateMachine.ChangeState(_fleeState); //Le guard est badass mais pas autant que ca. Il va fuire si il est en critical health tu es trop proche.
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
+        {
+            _stateMachine.ChangeState(_alertState);
+            return;
         }
 
         if (_navMeshAgent != null)
@@ -79,7 +87,8 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
 
     public override void onTakeDamage()
     {
-        CanRegognizePlayer = true; //Si jamais il reconnaissait pas deja la menace.
+        CanRegognizePlayer = true; //Si jamais il reconnaissait pas deja la menace. Juste au cas ou.
+        _stateMachine.ChangeState(_attackState);
     }
 
 }

@@ -6,7 +6,7 @@ public class AttackState : BaseState
 
     public override void Enter()
     {
-
+        _personnage._audioPlayer.PlaySpottedAttackSound();
     }
 
     public override void Exit()

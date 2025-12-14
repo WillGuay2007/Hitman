@@ -5,6 +5,10 @@ public class AudioPlayer : MonoBehaviour
 
     [SerializeField] AudioSource _audioSource;
     [SerializeField] AudioClip _shoot;
+    [SerializeField] AudioClip _eat;
+    [SerializeField] AudioClip _spotted;
+    [SerializeField] AudioClip _alarm;
+    [SerializeField] AudioClip _spottedAttack;
 
     void Start()
     {
@@ -17,4 +21,8 @@ public class AudioPlayer : MonoBehaviour
     }
 
     public void PlayShootSound() => PlaySound(_shoot);
+    public void PlayEatSound() => PlaySound(_eat);
+    public void PlaySpottedSound() => PlaySound(_spotted);
+    public void PlayAlarmSound() => PlaySound(_alarm);
+    public void PlaySpottedAttackSound() => PlaySound(_spottedAttack);
 }

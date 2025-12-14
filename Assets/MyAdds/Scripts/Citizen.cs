@@ -17,6 +17,12 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
     {
         _timeIdled += Time.deltaTime;
 
+        if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
+        {
+            _stateMachine.ChangeState(_fleeState);
+            return;
+        }
+
         if (_timeIdled > _idleTimer) _stateMachine.ChangeState(_roamState);
     }
 
@@ -28,7 +34,7 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
     public override void onRoamEnter()
     {
         _animator.SetBool("Roam", true);
-        //Le citizen va chercher a eviter le player si il reconnait la menace.
+        //Le citizen va chercher a eviter le player si il reconnait la menace dans le enter seulement.
         if (CanRegognizePlayer)
         {
             _navMeshAgent.SetDestination(GetRandomPointOutOfPlayerRadius(10f).transform.position);
@@ -41,6 +47,7 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
     public override void onRoamUpdate()
     {
+        //J'ai choisi le 3ieme choix des criteres de correction, c'est à dire quand il apercoit le joueur. Je vais aussi incorporer l'alarme
         if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
         {
             _stateMachine.ChangeState(_fleeState);
@@ -50,7 +57,11 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
         {
             if (!_navMeshAgent.pathPending && _navMeshAgent.remainingDistance <= 1)
             {
-                if (Random.Range(0, 5) == 0) { _stateMachine.ChangeState(_idleState); return; } //Une chance sur 5 qu'il idle rendu a un point.
+                if (Random.Range(0, 5) == 0) { _stateMachine.ChangeState(_idleState); return; } else if (Random.Range(0,0) == 0) {
+                    _navMeshAgent.ResetPath();
+                    _stateMachine.ChangeState(_eatFruitState);
+                    return;
+                }
                 _navMeshAgent.SetDestination(GetRandomPoint().transform.position);
             }
         }

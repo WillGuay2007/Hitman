@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class StateMachine
 {
-    private BaseState _currentState;
+    public BaseState _currentState; //public car je veut la voir dans le basepersonnage
 
     public void ChangeState(BaseState newState)
     {
