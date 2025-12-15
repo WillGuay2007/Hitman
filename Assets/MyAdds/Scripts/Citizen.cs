@@ -1,5 +1,6 @@
 using UnityEngine;
 
+//PAS METTRE D'ALERTE POUR LE CITIZEN EST VOLONTAIRE. COMME TU DISAIS, C'EST MOINS REALISTE SINON.
 public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque BasePersonnage l'implémente
 {
 
@@ -19,7 +20,12 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
         if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
         {
-            _stateMachine.ChangeState(_fleeState);
+            if (Random.Range(0, 2) == 0)
+            {
+                _stateMachine.ChangeState(_fleeState);
+            }
+            else { _stateMachine.ChangeState(_goingForAlarmState); }
+            
             return;
         }
 
@@ -50,7 +56,11 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
         //J'ai choisi le 3ieme choix des criteres de correction, c'est à dire quand il apercoit le joueur. Je vais aussi incorporer l'alarme
         if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
         {
-            _stateMachine.ChangeState(_fleeState);
+            if (Random.Range(0, 2) == 0)
+            {
+                _stateMachine.ChangeState(_fleeState);
+            }
+            else { _stateMachine.ChangeState(_goingForAlarmState); }
             return;
         }
         if (_navMeshAgent != null)
@@ -69,6 +79,7 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
     public override void onFleeEnter()
     {
+        _navMeshAgent.ResetPath();
         CanRegognizePlayer = true;
         _animator.SetBool("Flee", true);
         _navMeshAgent.speed += 5;
@@ -81,7 +92,6 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
         {
             if (Vector3.Distance(transform.position, _player.transform.position) >= 10)
             {
-                Debug.Log("NPC is far enough to stop fleeing");
                 _stateMachine.ChangeState(_roamState);
                 return;
             }

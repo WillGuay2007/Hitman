@@ -35,7 +35,13 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
 
     public override void onCriticalHealth()
     {
-        _stateMachine.ChangeState(_fleeState);
+        if (_npcs_Infos.GetNumberOfGuardGoingToAlarm() == 0)
+        {
+            _stateMachine.ChangeState(_goingForAlarmState);
+        } else
+        {
+            _stateMachine.ChangeState(_fleeState);
+        }
     }
 
     public override void onRoamEnter()

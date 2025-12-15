@@ -25,7 +25,7 @@ public class AlertState : BaseState
         timer += Time.deltaTime;
         if (timer > AlertTime)
         {
-            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 5 && _personnage._playerControls.HasGunEquipped)
+            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 15 && _personnage._playerControls.HasGunEquipped)
             {
                 _stateMachine.ChangeState(_personnage._attackState);
                 return;

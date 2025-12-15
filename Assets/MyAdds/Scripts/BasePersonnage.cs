@@ -15,6 +15,7 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public Animator _animator;
     public GameObject _player;
     public bool IsDead = false;
+    public NPC_Infos _npcs_Infos;
 
     //Mes states pour optimiser
     public IdleState _idleState;
@@ -24,6 +25,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public AlertState _alertState;
     public AttackState _attackState;
     public EatFruitState _eatFruitState;
+    public GoingForAlarmState _goingForAlarmState;
+    public LookAroundState _lookAroundState;
 
     [SerializeField] private string _currentStateName; //Puisque tu demandais d'afficher la current state dans l'inspecteur.
 
@@ -37,6 +40,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
 
     [SerializeField] private Transform _fruitsContainer;
     public List<Transform> _fruits;
+    public List<Transform> _alarms;
+    [SerializeField] private Transform _alarmContainer;
 
 
 
@@ -52,11 +57,17 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         _animator = GetComponent<Animator>();
         _player = GameObject.FindGameObjectWithTag("Player");
 
+        _npcs_Infos = FindAnyObjectByType<NPC_Infos>();
+
         _fruits = new List<Transform>();
 
         foreach (Transform fruit in _fruitsContainer)
         {
             _fruits.Add(fruit);
+        }
+        foreach (Transform alarm in _alarmContainer)
+        {
+            _alarms.Add(alarm);
         }
 
         _stateMachine = new StateMachine();
@@ -71,6 +82,8 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         _eatFruitState = new EatFruitState(_stateMachine, this);
         _alertState = new AlertState(_stateMachine, this);
         _attackState = new AttackState(_stateMachine, this);
+        _goingForAlarmState = new GoingForAlarmState(_stateMachine, this);
+        _lookAroundState = new LookAroundState(_stateMachine, this);
 
         Mesh = transform.GetChild(0).gameObject;
         MeshColor = Mesh.GetComponent<SkinnedMeshRenderer>().material.color;
@@ -163,6 +176,27 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         }
         return FurthestPoint;
     }
+
+    public Transform GetClosestAlarm()
+    {
+        Transform closestAlarm = _alarms[0];
+        float bestDistance = Mathf.Infinity;
+        foreach (Transform alarm in _alarms)
+        {
+            if (Vector3.Distance(transform.position, alarm.position) < bestDistance)
+            {
+                bestDistance = Vector3.Distance(transform.position, alarm.position);
+                closestAlarm = alarm;
+            }
+        }
+        return closestAlarm;
+    }
+
+    public Vector3 getRandomPolarCoordinate(float radius)
+    {
+        float randomAngle = Random.Range(0, 360f);
+        return new Vector3(Mathf.Cos(randomAngle) * radius, Mathf.Sin(randomAngle) * radius);
+    } //Je suis conscient que le point peut sortir du nav mesh surface. j'ai fait de mon mieux pour pas que ca arrive en gardant le radius assez bas quand je l'utilise.
 
     IEnumerator TakeDamageEffect()
     {

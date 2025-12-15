@@ -18,6 +18,7 @@ public class GunHandler : MonoBehaviour
 
     public void ToggleGunEquip()
     {
+        SoundPlayer.PlayGunToggleSound();
         bool EquippedStatus = !hasGunEquipped;
         hasGunEquipped = EquippedStatus;
         transform.GetComponent<MeshRenderer>().enabled = EquippedStatus;

@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class RoamState : BaseState
 {
@@ -11,6 +8,7 @@ public class RoamState : BaseState
 
     public override void Exit()
     {
+        _personnage._navMeshAgent.ResetPath();
         _personnage._animator.SetBool("Roam", false);
     }
 

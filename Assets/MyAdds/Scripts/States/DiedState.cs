@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 public class DiedState : BaseState
@@ -12,6 +9,7 @@ public class DiedState : BaseState
     private int sprayIndex = 0;
     public override void Enter()
     {
+        _personnage._audioPlayer.PlayDeathSound();
         _personnage.DestroyComponents();
         _personnage.transform.Rotate(-90f, 0f, 0f);
         bloodSpray = _personnage.transform.Find("Rig/B-root/B-hips/B-spine/BloodSprayFX");

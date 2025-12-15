@@ -7,6 +7,7 @@ using UnityEngine;
 public class StateMachine
 {
     public BaseState _currentState; //public car je veut la voir dans le basepersonnage
+    //Je sais que privé est une meilleure pratique mais je vise pas la perfection non plus, c'est un projet d'école.
 
     public void ChangeState(BaseState newState)
     {
