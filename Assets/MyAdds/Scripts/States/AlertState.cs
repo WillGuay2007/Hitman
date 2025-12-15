@@ -1,5 +1,4 @@
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class AlertState : BaseState
 {
@@ -22,10 +21,19 @@ public class AlertState : BaseState
 
     public override void Update()
     {
+
+        Vector3 direction = _personnage._player.transform.position - _personnage.transform.position;
+        direction.y = 0f;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        _personnage.transform.rotation = Quaternion.Lerp(_personnage.transform.rotation, targetRotation, 0.005f); //0.005 parce que je veut qu'il tourne tres lentement.
+        //Je trouve qu'un lerp ca fit mieux avec alert state. pas besoin de lerp dans attackstate, tourner instantané c'est mieux je trouve dans attack.
+
         timer += Time.deltaTime;
         if (timer > AlertTime)
         {
-            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 15 && _personnage._playerControls.HasGunEquipped)
+            //Au debut j'avais mis que si le joueur a pas le gun equipped il va pas l'attaquer apres le timer mais j'ai réalisé que cest trop facile sinon.
+            if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 12)
             {
                 _stateMachine.ChangeState(_personnage._attackState);
                 return;

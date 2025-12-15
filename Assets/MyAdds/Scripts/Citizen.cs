@@ -40,7 +40,7 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
     public override void onRoamEnter()
     {
         _animator.SetBool("Roam", true);
-        //Le citizen va chercher a eviter le player si il reconnait la menace dans le enter seulement.
+        //Le citizen va chercher a eviter le player si il reconnait la menace.
         if (CanRegognizePlayer)
         {
             _navMeshAgent.SetDestination(GetRandomPointOutOfPlayerRadius(10f).transform.position);
@@ -53,7 +53,6 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
     public override void onRoamUpdate()
     {
-        //J'ai choisi le 3ieme choix des criteres de correction, c'est à dire quand il apercoit le joueur. Je vais aussi incorporer l'alarme
         if (Vector3.Distance(transform.position, _player.transform.position) <= 5 && _playerControls.HasGunEquipped)
         {
             if (Random.Range(0, 2) == 0)
@@ -72,7 +71,15 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
                     _stateMachine.ChangeState(_eatFruitState);
                     return;
                 }
-                _navMeshAgent.SetDestination(GetRandomPoint().transform.position);
+                if (CanRegognizePlayer)
+                {
+                    //J'aurai pu faire qu'il aye a l'alarme a chaque fois mais ca serait trop exagéré pour le gameplay.
+                    _navMeshAgent.SetDestination(GetRandomPointOutOfPlayerRadius(10f).transform.position);
+                }
+                else
+                {
+                    _navMeshAgent.SetDestination(GetRandomPoint().transform.position);
+                }
             }
         }
     }
@@ -88,7 +95,7 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
 
     public override void onFleeUpdate()
     {
-        if (!_navMeshAgent.pathPending && _navMeshAgent.remainingDistance <= 0.1f)
+        if (!_navMeshAgent.pathPending && _navMeshAgent.remainingDistance <= 1f) //0.1f faisait trop de problemes quand 2 npc allaient au meme point
         {
             if (Vector3.Distance(transform.position, _player.transform.position) >= 10)
             {
@@ -97,6 +104,15 @@ public class Citizen : BasePersonnage // C'est aussi un IPersonnage puisque Base
             }
             _navMeshAgent.SetDestination(GetFurthestPointFromPlayer().position);
         }
+    }
+
+    public override void OnSeeDeadBody()
+    {
+        if (_stateMachine._currentState is DiedState ||
+            _stateMachine._currentState is FleeState ||
+           _stateMachine._currentState is GoingForAlarmState
+           ) return;
+        _stateMachine.ChangeState(_goingForAlarmState);
     }
 
     public override void onCriticalHealth()

@@ -118,12 +118,12 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
     public virtual void onCriticalHealth() { }
     public virtual void onTakeDamage() { }
 
-    public virtual void TakeDamage(int damageAmount)
+    public virtual void TakeDamage(int damageAmount) //Si vie plus grand que 30 appeler onTakeDamage sinon onCriticalHealth
     {
         if (IsDead) return;
         StartCoroutine(TakeDamageEffect());
         _health -= damageAmount;
-        if (_health > 0) onTakeDamage();
+        if (_health > 30) onTakeDamage();
         if (_health <= 0) { IsDead = true; Die(); return; }
         else if (_health <= 30) onCriticalHealth();
     }
@@ -192,11 +192,30 @@ public abstract class BasePersonnage : MonoBehaviour, IPersonnage
         return closestAlarm;
     }
 
-    public Vector3 getRandomPolarCoordinate(float radius)
+    public Vector3 getRandomPolarCoordinate(float radius, Vector3 center)
     {
-        float randomAngle = Random.Range(0, 360f);
-        return new Vector3(Mathf.Cos(randomAngle) * radius, Mathf.Sin(randomAngle) * radius);
+        float randomAngle = Random.Range(0, 360f) * Mathf.Deg2Rad;
+        Vector3 point = center + new Vector3(Mathf.Cos(randomAngle) * radius, 10f,  Mathf.Sin(randomAngle) * radius);
+
+        if (Physics.Raycast(point, Vector3.down, out RaycastHit hit, 50f))
+        {
+            return hit.point - center;
+        }
+
+        return Vector3.zero;
+
     } //Je suis conscient que le point peut sortir du nav mesh surface. j'ai fait de mon mieux pour pas que ca arrive en gardant le radius assez bas quand je l'utilise.
+
+    public float GetDistanceWithPlayer()
+    {
+        return Vector3.Distance(transform.position, _player.transform.position); 
+        //CETTE FONCTION JE L'AI DÉFINI VERS LA FIN. CA SE PEUT QUE J'UTILISE CETTE LOGIQUE SANS LA FONCTION DANS D'AUTRES SCRIPTS.
+    }
+
+    public virtual void OnSeeDeadBody()
+    {
+
+    }
 
     IEnumerator TakeDamageEffect()
     {

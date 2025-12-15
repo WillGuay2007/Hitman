@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-//Script fait par moi
+//Script fait par moi et non unity.
 public class PlayerControls : MonoBehaviour
 {
+    //Ma nomenclature est pas idéale mais y'est trop tard pour changer ca dans tous mes scripts.
     private float Health = 100;
     [SerializeField] private float m_ShootDelay = 1f;
     [SerializeField] private InputActionAsset m_InputActionAsset;
@@ -16,12 +17,14 @@ public class PlayerControls : MonoBehaviour
     [SerializeField] private int gunDamage;
     [SerializeField] TextMeshProUGUI healthText;
     [SerializeField] GameObject hurtPanel;
+    private float soundRadius = 15f;
     private bool canShoot = true;
     private Shake CameraShake;
     private InputAction ShootAction;
     private InputAction ToggleGunEquipAction;
     private Animator GunAnimator;
     public bool HasGunEquipped = true;
+    private NPC_Infos npc_infos;
 
 
     void Start()
@@ -30,6 +33,7 @@ public class PlayerControls : MonoBehaviour
         ShootAction = m_InputActionAsset.FindAction("Shoot");
         ToggleGunEquipAction = m_InputActionAsset.FindAction("ToggleGunEquip");
         CameraShake = PlayerCamera.GetComponent<Shake>();
+        npc_infos = FindAnyObjectByType<NPC_Infos>();
     }
 
     void Update()
@@ -51,6 +55,35 @@ public class PlayerControls : MonoBehaviour
         if (!MyGunHandler.HasGunEquipped() || !canShoot) return; //Pas faire la logique de tir si il est pas equipped.
         canShoot = false;
         StartCoroutine(ShootDelayCoroutine());
+
+        npc_infos.ApplyFunctionToEachNPC(NPC =>
+        {
+            if (
+            NPC._stateMachine._currentState is AlertState ||
+            NPC._stateMachine._currentState is DiedState ||
+            NPC._stateMachine._currentState is GoingForAlarmState ||
+            NPC._stateMachine._currentState is FleeState ||
+            NPC._stateMachine._currentState is AttackState
+            ) return;
+
+
+            if (NPC.GetDistanceWithPlayer() <= soundRadius) //Si le npc a entendu applique la logique ci dessous.
+            {
+                if (NPC is Citizen)
+                {
+                    NPC._stateMachine.ChangeState(NPC._fleeState); //Je veut pas qu'ils ayent alarmer ca serait trop chaotique, meme si cetais dans les criteres.
+                    //Pour le critère: il regarde autour et cherche la source d'alerte, j'ai juste mis flee encore une fois pour garder le réalisme
+                }
+                else
+                {
+                    NPC._stateMachine.ChangeState(NPC._lookAroundState); //Tu avais mentionné de mettre un radius mais j'ai utilisé cette facon
+                    //J'espere que ca derange pas trop, c'est similaire de toute facon.
+                    
+                }
+            }
+            
+        }); //J'ai fait mes recherches sur les lambdas.
+
         CameraShake.start = true;
         GunAnimator.SetTrigger("Fire");
 

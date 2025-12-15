@@ -9,16 +9,18 @@ public class AttackState : BaseState
     public AttackState(StateMachine stateMachine, BasePersonnage personnage) : base(stateMachine, personnage) { }
     private float shootTimer;
     private float shootDelay = 3f;
-    private float gunDamage = 5f;
+    private float gunDamage = 10f; //5 c'étais trop facile
+    private float allowExitTimer = 0f; //Sans ca, le guard arrete de te chasser instantanément si tu le "snipe" de loin
 
     public override void Enter()
     {
         shootTimer = 0;
+        allowExitTimer = 0f;
         _personnage._animator.SetBool("Flee", true);
         _personnage._navMeshAgent.speed += 4;
         _personnage._navMeshAgent.ResetPath();
         _personnage._audioPlayer.PlaySpottedAttackSound();
-        _personnage._navMeshAgent.SetDestination(_personnage._player.transform.position + _personnage.getRandomPolarCoordinate(5f));
+        _personnage._navMeshAgent.SetDestination(_personnage._player.transform.position + _personnage.getRandomPolarCoordinate(5f, _personnage._player.transform.position));
     }
 
     public override void Exit()
@@ -29,7 +31,8 @@ public class AttackState : BaseState
 
     public override void Update()
     {
-        if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) > 15)
+        allowExitTimer += Time.deltaTime;
+        if (allowExitTimer > 3 && Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) > 15)
         {
             _stateMachine.ChangeState(_personnage._roamState);
         }
@@ -49,18 +52,18 @@ public class AttackState : BaseState
             if (!_personnage._navMeshAgent.hasPath)
             {
                 _personnage._animator.SetBool("Flee", true);
-                _personnage._navMeshAgent.SetDestination(_personnage._player.transform.position + _personnage.getRandomPolarCoordinate(5f));
+                _personnage._navMeshAgent.SetDestination(_personnage._player.transform.position + _personnage.getRandomPolarCoordinate(5f, _personnage.transform.position));
             }
         }
     }
 
     private void Shoot() {
         _personnage._audioPlayer.PlayGuardShootSound();
-        if (Random.Range(0,2) == 1)
+        if (!(Random.Range(0,3) == 1)) //2 chance sur 3 de land la balle.
         {
             _personnage._playerControls.TakeDamage(gunDamage);
             _personnage._audioPlayer.PlayBulletHitSound();
-        } //1 chance sur 2 de se prendre une balle.
+        }
     }
 
 }

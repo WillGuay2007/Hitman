@@ -25,7 +25,7 @@ public class Alarm : MonoBehaviour
         }
     }
 
-    private void ActivateAlarm()
+    private void ActivateAlarm(BasePersonnage GuardWhoActivated)
     {
         audioPlayer.PlayAlarmSound();
         foreach(BasePersonnage npc in NPCS)
@@ -36,7 +36,7 @@ public class Alarm : MonoBehaviour
                 ) return; // Je veut pas alerter des cadavres ou ceux qui savent deja je suis ou
             if (npc is Guard)
             {
-                npc._stateMachine.ChangeState(npc._lookAroundState);
+                npc._stateMachine.ChangeState(npc._lookAroundState); //Je trouve que cest mieux quil aye dans cette state plutot que se diriger vers le guard vu que la map est petite.
             } else
             {
                 npc._stateMachine.ChangeState(npc._fleeState);
@@ -50,7 +50,7 @@ public class Alarm : MonoBehaviour
         BasePersonnage NPC = other.GetComponent<BasePersonnage>();
         if (NPC != null && NPC._stateMachine._currentState is GoingForAlarmState)
         {
-            ActivateAlarm();
+            ActivateAlarm(NPC);
             NPC._stateMachine.ChangeState(NPC._fleeState);
         }
     }

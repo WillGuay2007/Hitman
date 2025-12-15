@@ -26,10 +26,10 @@ public class LookAroundState : BaseState
             _stateMachine.ChangeState(_personnage._idleState);
             return;
         }
-        if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 5 && _personnage._playerControls.HasGunEquipped)
+        if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 12 && _personnage._playerControls.HasGunEquipped)
         {
             _stateMachine.ChangeState(_personnage._alertState);
-            return;
+            return; //Quand il sont en lookaroundstate, les guards vont patrouiller avec une plus grande vitesse et champ de vision
         }
 
         if (_personnage._navMeshAgent != null)

@@ -35,6 +35,7 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
 
     public override void onCriticalHealth()
     {
+        if (_stateMachine._currentState is GoingForAlarmState) return; //Pour eviter les bugs
         if (_npcs_Infos.GetNumberOfGuardGoingToAlarm() == 0)
         {
             _stateMachine.ChangeState(_goingForAlarmState);
@@ -83,12 +84,22 @@ public class Guard : BasePersonnage // C'est aussi un IPersonnage puisque BasePe
         {
             if (Vector3.Distance(transform.position, _player.transform.position) >= 10)
             {
-                Debug.Log("NPC is far enough to stop fleeing");
                 _stateMachine.ChangeState(_roamState);
                 return;
             }
             _navMeshAgent.SetDestination(GetFurthestPointFromPlayer().position);
         }
+    }
+
+    public override void OnSeeDeadBody() //Appelé a partir de NPC_Infos
+    {
+        if (_stateMachine._currentState is DiedState ||
+            _stateMachine._currentState is AttackState ||
+            _stateMachine._currentState is LookAroundState ||
+            _stateMachine._currentState is AlertState || //Cette ligne est vraiment importante sinon un bug va peter tes oreilles.
+            _stateMachine._currentState is GoingForAlarmState
+            ) return;
+        _stateMachine.ChangeState(_lookAroundState);
     }
 
     public override void onTakeDamage()

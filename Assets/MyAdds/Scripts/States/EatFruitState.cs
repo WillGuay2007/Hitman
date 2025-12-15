@@ -20,9 +20,19 @@ public class EatFruitState : BaseState //C'est pour le critère d'avoir une tâche
     {
         _personnage._animator.SetBool("Roam", false);
     }
-
     public override void Update()
     {
+
+
+        if (Vector3.Distance(_personnage.transform.position, _personnage._player.transform.position) <= 5 && _personnage._playerControls.HasGunEquipped)
+        {
+            if (Random.Range(0, 2) == 0)
+            {
+                _stateMachine.ChangeState(_personnage._fleeState);
+            }
+            else { _stateMachine.ChangeState(_personnage._goingForAlarmState); }
+            return;
+        }
 
         if (!_personnage._navMeshAgent.pathPending && _personnage._navMeshAgent.remainingDistance <= 0.1f)
         {
